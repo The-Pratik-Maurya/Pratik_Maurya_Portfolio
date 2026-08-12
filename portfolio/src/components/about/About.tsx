@@ -84,13 +84,13 @@ export default function About() {
             </h3>
             <div className="flex flex-col gap-5 text-sm leading-relaxed text-white/60 md:text-base">
               <p>
-                Currently in my 3rd year pursuing a B.Tech in Computer Science and Engineering, my focus lies at the absolute intersection of modern Web Development and AI Engineering. I build highly scalable, intelligent applications leveraging Python, FastAPI, React, and LLM integrations.
+                Hi, I'm Pratik Maurya, a 4th-year Computer Science and Engineering student at Kashi Institute of Technology. I specialize in bridging the gap between modern Web Development and Artificial Intelligence. With a strong command over Python, FastAPI, Next.js, and LLM integrations, I build intelligent, scalable, and highly interactive applications. From automating complex workflows to architecting high-performance backends, my goal is to engineer solutions that are not just functional, but futuristic.
               </p>
               <p>
                 Beyond writing clean architecture, I am a digital content creator and the mind behind <span className="text-white font-semibold">Pratik Verse</span>, a platform dedicated to producing investigative documentaries, decoding historical mysteries, and applying cinematic storytelling techniques.
               </p>
               <p>
-                Whether I am engineering automated RAG pipelines, extracting strategic principles from Chanakya Niti, or analyzing renewable energy trends within the stock market, my approach remains fiercely data-driven and engineered for long-term impact.
+                My technical ecosystem revolves around modern software engineering and automation. I work extensively with Python, FastAPI, and Next.js to develop high-performance backends and interactive frontends. Whether it is engineering a voice-integrated AI assistant, building web automation solutions, or integrating complex LLM workflows, I thrive on tackling challenging problems. I believe that great software is built on a foundation of robust APIs, optimized data flow, and secure architecture.
               </p>
             </div>
           </motion.div>

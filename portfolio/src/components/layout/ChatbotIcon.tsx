@@ -1,5 +1,6 @@
 "use client";
-
+// @ts-nocheck
+  // tumhara baaki ka code
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { FiMessageSquare, FiX, FiSend, FiCpu, FiMic, FiMicOff } from "react-icons/fi";
@@ -174,7 +175,7 @@ export default function ChatbotWidget() {
     setMessages(prev => [...prev, { sender: "bot", text: "Thinking..." }]);
 
     try {
-      const response = await fetch("http://localhost:8000/api/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

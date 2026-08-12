@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@layer base {
+ body {
+  background-color: #000000;
+  color: #ffffff;
+}
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050505;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00E5FF;
+  }
+}
+
+/* Hide default cursor on desktop */
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+  
+  /* Make sure links and buttons don't show the hand cursor either */
+  a, button, input, textarea, select {
+    cursor: none;
+  }
+}

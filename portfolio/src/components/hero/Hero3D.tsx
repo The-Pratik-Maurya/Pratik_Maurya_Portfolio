@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, ContactShadows, Float, Line } from "@react-three/drei"; // Stars hata diya yahan se
+import { OrbitControls, ContactShadows, Float, Line } from "@react-three/drei";
 import { useRef } from "react";
 import * as THREE from "three";
 
@@ -22,7 +22,8 @@ function BlockchainNetwork() {
 
   return (
     <Float speed={2} rotationIntensity={0.2} floatIntensity={1.5}>
-      <group ref={groupRef} scale={0.9} position={[0, -0.2, 0]}>
+      {/* UPDATE: scale 0.9 se 1 kiya, aur position ekdum center [0, 0, 0] kar di */}
+      <group ref={groupRef} scale={1} position={[0, 0, 0]}>
         
         <Line points={[centerNode, topNode]} color="#00E5FF" lineWidth={2} transparent opacity={0.4} />
         <Line points={[centerNode, bottomNode]} color="#00E5FF" lineWidth={2} transparent opacity={0.4} />
@@ -61,13 +62,12 @@ function BlockchainNetwork() {
 
 export default function Hero3D() {
   return (
-    <div className="absolute inset-0 h-full w-full pointer-events-none z-0">
+    // UPDATE: scale-[0.55] ko bada karke scale-[0.85] kar diya aur flex justify-center add kiya
+    <div className="absolute inset-0 h-full w-full pointer-events-none z-0 scale-[0.85] md:scale-100 flex items-center justify-center origin-center transition-transform duration-700">
       <Canvas camera={{ position: [0, 0, 9], fov: 45 }}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={2} color="#ffffff" />
         <directionalLight position={[-10, -10, -5]} intensity={4} color="#00E5FF" />
-
-        {/* YAHAN SE STARS HATA DIYE HAIN */}
 
         <BlockchainNetwork />
         

@@ -5,7 +5,6 @@ import Hero3D from "./Hero3D";
 import { FiTerminal, FiCpu } from "react-icons/fi";
 
 const typewriterWords = [
-  // Mobile par text size aur chota (text-xl, text-4xl) kiya hai taaki ek line me smoothly fit ho
   { text: "Hello!", style: "text-white/50 text-xl md:text-5xl" },
   { text: "I'm", style: "text-white/50 text-xl md:text-5xl" },
   { text: "PRATIK", style: "text-white text-4xl md:text-7xl font-bold" },
@@ -14,28 +13,21 @@ const typewriterWords = [
 
 export default function Hero() {
   return (
-    // min-h-[100dvh] use kiya hai taaki mobile browser ka URL bar height issue create na kare
     <section className="relative flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-transparent md:px-16" style={{ perspective: "1000px" }}>
       
-      {/* 3D Scene Layer (Center me fix kiya hai) */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
         <Hero3D />
       </div>
 
-      {/* 
-        Content Layer: 
-        Mobile me 'flex-col justify-between py-24' - Ye upar ke text ko top navbar ke paas aur 
-        neeche ke text ko social dock ke paas dhakel dega, beech me 3D cube ke liye full empty space milega.
-        Desktop me 'md:flex-row md:py-0 md:items-center'
-      */}
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-screen-xl flex-col items-center justify-between px-6 py-28 md:min-h-0 md:flex-row md:py-0">
+      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-screen-xl flex-col items-center justify-between px-6 py-24 md:min-h-0 md:flex-row md:py-0">
         
-        {/* LEFT SIDE: Typewriter (Mobile par Top section) */}
+        {/* LEFT SIDE: Typewriter (Mobile par Top-Left section) */}
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="flex w-full flex-col items-center text-center mt-4 md:mt-0 md:w-[40%] md:items-start md:text-left md:pl-10 pointer-events-auto"
+          // UPDATED: items-start, text-left, self-start
+          className="flex w-full flex-col items-start self-start text-left mt-4 md:mt-0 md:w-[40%] md:pl-10 pointer-events-auto"
         >
           <motion.div 
             animate={{ boxShadow: ["0px 0px 5px #00E5FF", "0px 0px 20px #00E5FF", "0px 0px 5px #00E5FF"] }}
@@ -54,7 +46,8 @@ export default function Hero() {
             </span>
           </motion.div>
 
-          <div className="flex flex-wrap justify-center gap-x-2 gap-y-1 md:justify-start md:gap-x-4 md:gap-y-4 max-w-[280px] md:max-w-none mx-auto md:mx-0">
+          {/* UPDATED: justify-start */}
+          <div className="flex flex-wrap justify-start gap-x-2 gap-y-1 md:gap-x-4 md:gap-y-4 max-w-[280px] md:max-w-none mx-0">
             {typewriterWords.map((wordObj, wordIndex) => (
               <div key={wordIndex} className="flex whitespace-nowrap">
                 {wordObj.text.split("").map((char, charIndex) => {
@@ -93,12 +86,13 @@ export default function Hero() {
         {/* Center Space for Desktop */}
         <div className="hidden md:block md:w-[20%]"></div>
 
-        {/* RIGHT SIDE: Glowing Title & Button (Mobile par Bottom section) */}
+        {/* RIGHT SIDE: Glowing Title & Button (Mobile par Bottom-Right section) */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
-          className="flex w-full flex-col items-center text-center mb-10 md:mb-0 md:w-[40%] md:items-end md:text-right md:pr-10 z-10 pointer-events-auto"
+          // UPDATED: items-end, text-right, self-end, mt-auto
+          className="flex w-full flex-col items-end self-end text-right mt-auto mb-10 md:mb-0 md:mt-0 md:w-[40%] md:pr-10 z-10 pointer-events-auto"
         >
           <motion.p 
             animate={{ y: [-2, 2, -2] }}

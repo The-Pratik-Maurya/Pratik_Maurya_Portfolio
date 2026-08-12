@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+
+// Ye line jadoo karegi: Vercel par Live URL legi, aur laptop par automatically Localhost legi
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3000";
+
 const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
@@ -7,8 +11,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        // Apne Render backend ka exact URL yahan daal do
-        destination: 'https://pratik-maurya-portfolio.onrender.com/api/:path*',
+        destination: `${BACKEND_URL}/api/:path*`,
       },
     ];
   },

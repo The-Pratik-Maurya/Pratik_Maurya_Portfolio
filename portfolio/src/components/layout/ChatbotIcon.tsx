@@ -1,6 +1,6 @@
 "use client";
 // @ts-nocheck
-  // tumhara baaki ka code
+
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { FiMessageSquare, FiX, FiSend, FiCpu, FiMic, FiMicOff } from "react-icons/fi";
@@ -265,7 +265,9 @@ export default function ChatbotWidget() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end md:bottom-8 md:right-8">
+    // 🔥 UPDATE 1: Yahan 'bottom-4' ko mobile ke liye 'bottom-24' (aur thoda safe side 'bottom-[90px]') kar diya hai
+    // PC ke liye wahi 'md:bottom-8' rahega. Isse chat icon navbar ke upar tairta hua dikhega.
+    <div className="fixed bottom-[95px] right-4 z-50 flex flex-col items-end md:bottom-8 md:right-8">
       
       <AnimatePresence>
         {isOpen && (
@@ -274,9 +276,10 @@ export default function ChatbotWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className="mb-4 flex h-[65vh] min-h-[400px] max-h-[600px] w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-[#00E5FF]/30 bg-[#050505]/95 shadow-[0_0_40px_rgba(0,229,255,0.2)] backdrop-blur-xl sm:w-[400px] md:w-[450px]"
+            // 🔥 UPDATE 2: Mobile par height max-h-[500px] tak limit kar di hai taaki screen ke top bar se na takraye
+            className="mb-4 flex h-[60vh] min-h-[380px] max-h-[480px] w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-[#00E5FF]/30 bg-[#050505]/95 shadow-[0_0_40px_rgba(0,229,255,0.2)] backdrop-blur-xl sm:w-[400px] md:h-[65vh] md:max-h-[600px] md:w-[450px]"
           >
-            <div className="flex items-center justify-between border-b border-[#00E5FF]/20 bg-[#00E5FF]/10 px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#00E5FF]/20 bg-[#00E5FF]/10 px-5 py-4 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00E5FF]/20 text-[#00E5FF]">
                   <FiCpu className="h-4 w-4" />

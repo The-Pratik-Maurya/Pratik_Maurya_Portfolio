@@ -5,23 +5,27 @@ import Lenis from "lenis";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Lenis ko initialize kar rahe hain premium settings ke sath
     const lenis = new Lenis({
-      duration: 1.2, // Scroll kitni der tak smoothly rukega
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Cinematic ease-out effect
-      touchMultiplier: 2, // Mobile/Trackpad par touch speed
+      duration: 1.2, 
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
+      touchMultiplier: 2, 
+      // 🔥 OPTIMIZATION 1: Mobile par touch wheel skip taaki heavy load na aaye
+      syncTouch: false,
     });
 
-    // Request Animation Frame loop (Har frame par scroll update karne ke liye)
+    let rafId: number; // ID store karne ke liye variable
+
+    // Request Animation Frame loop 
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf); // ID update hoti rahegi
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
-    // Cleanup function jab component unmount ho
     return () => {
+      // 🔥 OPTIMIZATION 2: Memory Leak fix! Jab page change hoga, animation loop band ho jayega.
+      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);

@@ -1,21 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
-import useMousePosition from "../../hooks/useMousePosition";
+// 🔥 OPTIMIZATION 1: useMotionValue aur useSpring direct import kiye, inke use se React re-render nahi hota!
+import { motion, useMotionValue, useSpring } from "motion/react";
 
 export default function CustomCursor() {
-  const { x, y } = useMousePosition();
   const [isDesktop, setIsDesktop] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
-  // Sirf desktop par enable karenge
+  // Mouse ke coordinates direct MotionValue me store kar rahe hain (Bina hook ke)
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+
+  // Tracker wrapper ke liye smooth spring config
+  const springConfig = { damping: 20, stiffness: 600, mass: 0.05 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
   useEffect(() => {
     const checkDevice = () => {
       setIsDesktop(window.matchMedia("(pointer: fine)").matches);
     };
     checkDevice();
     window.addEventListener("resize", checkDevice);
+
+    // 🔥 OPTIMIZATION 2: Mouse move ko seedha set kar rahe hain bina state update ke
+    const manageMouseMove = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -31,48 +44,42 @@ export default function CustomCursor() {
       }
     };
 
+    window.addEventListener("mousemove", manageMouseMove);
     window.addEventListener("mouseover", handleMouseOver);
 
     return () => {
       window.removeEventListener("resize", checkDevice);
+      window.removeEventListener("mousemove", manageMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
     };
-  }, []);
+  }, [mouseX, mouseY]);
 
   if (!isDesktop) return null;
 
   return (
     <>
-      {/* 1. CORE DOT: Ekdum instant (Lag-free) */}
+      {/* 1. CORE DOT: style={{ x, y }} use karke CPU bachaya */}
       <motion.div
         className="pointer-events-none fixed left-0 top-0 z-[9999] flex h-2 w-2 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]"
-        animate={{ 
-          x, 
-          y,
-          scale: isHovering ? 0 : 1, // Hover par chhip jayega
-        }}
-        transition={{ type: "tween", ease: "linear", duration: 0 }} 
+        style={{ x: mouseX, y: mouseY }}
+        animate={{ scale: isHovering ? 0 : 1 }}
+        transition={{ duration: 0.15 }} 
       />
 
-      {/* 2. TRACKER WRAPPER: Smooth follow karta hai bina delay ke */}
+      {/* 2. TRACKER WRAPPER: style={{ x, y }} se ultra smooth */}
       <motion.div
         className="pointer-events-none fixed left-0 top-0 z-[9998] flex items-center justify-center -translate-x-1/2 -translate-y-1/2"
-        animate={{ x, y }}
-        transition={{
-          type: "spring",
-          damping: 20,
-          mass: 0.05,     
-          stiffness: 600, 
-        }}
+        style={{ x: smoothX, y: smoothY }}
       >
-        {/* 3. JARVIS SCI-FI RING (Lock-on effect) */}
+        {/* 3. JARVIS SCI-FI RING - 🔥 OPTIMIZATION 3: 'backdrop-blur' hata diya jo browser hang karta hai */}
         <motion.div
-          className="relative flex items-center justify-center rounded-full border-x-2 border-y-2 border-y-transparent border-x-[#00E5FF]/80 backdrop-blur-[1px]"
+          className="relative flex items-center justify-center rounded-full border-x-2 border-y-2 border-y-transparent border-x-[#00E5FF]/80"
           animate={{
             width: isHovering ? 55 : 32,
             height: isHovering ? 55 : 32,
-            rotate: isHovering ? 180 : 0, // Hover par 180 degree flip hoga
-            backgroundColor: isHovering ? "rgba(0, 229, 255, 0.15)" : "transparent",
+            rotate: isHovering ? 180 : 0, 
+            // Warning fix: "transparent" ki jagah "rgba(0,0,0,0)" use kiya
+            backgroundColor: isHovering ? "rgba(0, 229, 255, 0.15)" : "rgba(0, 0, 0, 0)",
             borderColor: isHovering ? "#00E5FF" : "rgba(0, 229, 255, 0.5)",
             borderWidth: isHovering ? "1px" : "2px"
           }}
@@ -82,13 +89,13 @@ export default function CustomCursor() {
             rotate: { duration: 0.6, ease: "backOut" }
           }}
         >
-          {/* Inner Continuous Spinning Radar (Dashed Line) */}
+          {/* Inner Continuous Spinning Radar */}
           <div 
             className="absolute inset-[2px] rounded-full border border-dashed border-[#00E5FF]/50 animate-spin"
-            style={{ animationDuration: isHovering ? "2s" : "8s" }} // Hover par speed badh jayegi
+            style={{ animationDuration: isHovering ? "2s" : "8s" }} 
           />
           
-          {/* Hover par Center me aane wala naya lock-on dot */}
+          {/* Hover par Center lock-on dot */}
           <motion.div 
              initial={{ opacity: 0, scale: 0 }}
              animate={{ 

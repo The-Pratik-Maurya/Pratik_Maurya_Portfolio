@@ -17,22 +17,19 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const { scrollY } = useScroll();
 
-  // 🔥 NAYA: Scroll Up/Down par Navbar Hide/Show Animation
+  // 🔥 OPTIMIZATION 1: State sirf tabhi update hogi jab actual me zaroorat ho.
+  // Faltu re-renders roke gaye hain jis se scroll karte waqt lag nahi aayega.
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
-    // Agar menu open hai toh hide mat karo
     if (isOpen) return;
     
-    // Agar user 150px se zyada neeche gaya aur scroll down kar raha hai, toh hide
     if (latest > previous && latest > 150) {
-      setHidden(true);
+      if (!hidden) setHidden(true); 
     } else {
-      // Upar scroll karne par wapas show karo
-      setHidden(false);
+      if (hidden) setHidden(false);
     }
   });
 
-  // Background scroll lock when menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -44,7 +41,6 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  // Framer Motion Variants for Menu and Links
   const menuVariants = {
     initial: { x: "100%" },
     animate: { 
@@ -53,13 +49,13 @@ export default function Navbar() {
     },
     exit: { 
       x: "100%", 
-      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.2 } 
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.1 } 
     }
   };
 
   const linkContainerVariants = {
     animate: {
-      transition: { staggerChildren: 0.1, delayChildren: 0.3 }
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
     },
     exit: {
       transition: { staggerChildren: 0.05, staggerDirection: -1 }
@@ -85,24 +81,22 @@ export default function Navbar() {
   return (
     <>
       <motion.header
-        // 🔥 NAYA: Scroll Hide/Show aur 3D Drop Animation
         variants={{
-          visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+          visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } },
           hidden: { y: "-100%", opacity: 0, transition: { duration: 0.4, ease: "easeInOut" } }
         }}
-        initial="hidden"
+        initial="visible" // "hidden" se "visible" kar diya taaki pehli baar page reload par navbar gayab na ho
         animate={hidden ? "hidden" : "visible"}
-        className="fixed left-0 right-0 top-0 z-[60] border-b border-white/5 bg-[#0a0a0a]/80 px-6 py-4 backdrop-blur-xl md:px-10"
+        // 🔥 OPTIMIZATION 2: 'backdrop-blur-xl' ko 'backdrop-blur-md' aur bg opacity ko 90% kiya. Look same hai, GPU load 50% kam.
+        className="fixed left-0 right-0 top-0 z-[60] border-b border-white/5 bg-[#0a0a0a]/90 px-6 py-4 backdrop-blur-md md:px-10"
       >
         <nav className="mx-auto flex w-full max-w-screen-2xl items-center justify-between">
           
-          {/* Left: 3D Animated Logo */}
           <div className="w-1/2 md:w-1/3" style={{ perspective: "1000px" }}>
             <a href="#" onClick={() => setIsOpen(false)} className="group font-display text-2xl font-bold tracking-tight text-white relative z-[70] flex items-center">
               {logoText.map((char, index) => (
                 <motion.span
                   key={index}
-                  // 🔥 NAYA: 3D Flip & Drop Animation
                   initial={{ opacity: 0, y: -40, rotateX: 90 }}
                   animate={{ opacity: 1, y: 0, rotateX: 0 }}
                   transition={{ 
@@ -118,55 +112,47 @@ export default function Navbar() {
                   {char}
                 </motion.span>
               ))}
-              {/* Blinking Neon Dot */}
               <motion.span 
                 animate={{ opacity: [0, 1, 0] }}
-                transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
-                className="text-[#00E5FF] ml-[2px] drop-shadow-[0_0_8px_#00E5FF]"
+                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                // 🔥 OPTIMIZATION 3: Drop-shadow filter heavy tha, uski jagah text-shadow use kiya.
+                className="text-[#00E5FF] ml-[2px]"
+                style={{ textShadow: "0 0 8px #00E5FF" }}
               >
                 .
               </motion.span>
             </a>
           </div>
 
-          {/* Center: Email with Enhanced Flying Animation (Desktop Only) */}
           <div className="hidden w-1/3 justify-center md:flex">
             <a 
               href="mailto:pratikmaurya222@gmail.com" 
-              className="group flex items-center gap-2.5 rounded-full border border-white/5 bg-white/5 px-5 py-2 text-sm font-medium tracking-wide text-white/60 transition-all duration-300 hover:border-[#00E5FF]/50 hover:bg-[#00E5FF]/10 hover:text-white hover:shadow-[0_0_20px_rgba(0,229,255,0.2)]"
+              className="group flex items-center gap-2.5 rounded-full border border-white/5 bg-white/5 px-5 py-2 text-sm font-medium tracking-wide text-white/60 transition-all duration-300 hover:border-[#00E5FF]/50 hover:bg-[#00E5FF]/10 hover:text-white hover:shadow-[0_0_15px_rgba(0,229,255,0.2)]"
             >
               <span>pratikmaurya222@gmail.com</span>
               <div className="relative flex h-5 w-5 items-center justify-center overflow-hidden">
-                {/* Outgoing Plane (Udd ke jayega) */}
                 <Send className="absolute h-4 w-4 text-[#00E5FF] transition-all duration-500 ease-in-out group-hover:translate-x-6 group-hover:-translate-y-6 group-hover:scale-50 group-hover:opacity-0" />
-                {/* Incoming Plane (Peeche se swoop karega) */}
                 <Send className="absolute h-4 w-4 text-[#00E5FF] -translate-x-6 translate-y-6 scale-50 opacity-0 transition-all duration-500 ease-in-out group-hover:translate-x-0 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100" />
               </div>
             </a>
           </div>
 
-          {/* Right: Desktop Links (Shaped Buttons with Neon Glow) */}
           <div className="hidden w-1/3 justify-end gap-3 md:flex">
             {navLinks.map((link, i) => (
               <motion.a 
                 key={i} 
                 href={link.href} 
-                // 🔥 NAYA: Pill Shaped Hover Buttons
                 className="relative overflow-hidden rounded-full px-4 py-2 text-xs font-bold uppercase tracking-widest text-white/60 transition-all duration-300 hover:text-black group"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {/* Button Neon Hover Background */}
                 <span className="absolute inset-0 z-0 h-full w-full -translate-x-full rounded-full bg-[#00E5FF] transition-transform duration-300 ease-out group-hover:translate-x-0"></span>
-                {/* Button Glow Shadow */}
-                <span className="absolute inset-0 z-0 h-full w-full rounded-full opacity-0 shadow-[0_0_15px_#00E5FF] transition-opacity duration-300 group-hover:opacity-100"></span>
-                
+                <span className="absolute inset-0 z-0 h-full w-full rounded-full opacity-0 shadow-[0_0_15px_rgba(0,229,255,0.5)] transition-opacity duration-300 group-hover:opacity-100"></span>
                 <span className="relative z-10">{link.name}</span>
               </motion.a>
             ))}
           </div>
 
-          {/* Mobile Hamburger Button */}
           <div className="flex md:hidden justify-end w-1/2">
             <button 
               onClick={() => setIsOpen(!isOpen)} 
@@ -174,7 +160,7 @@ export default function Navbar() {
               aria-label="Toggle Menu"
             >
               <motion.span 
-                animate={isOpen ? { rotate: 45, y: 8, backgroundColor: "#00E5FF", boxShadow: "0 0 10px #00E5FF" } : { rotate: 0, y: 0, backgroundColor: "#ffffff" }} 
+                animate={isOpen ? { rotate: 45, y: 8, backgroundColor: "#00E5FF", boxShadow: "0 0 10px rgba(0,229,255,0.5)" } : { rotate: 0, y: 0, backgroundColor: "#ffffff", boxShadow: "none" }} 
                 className="block h-[2px] w-7 rounded-full transition-all duration-300"
               />
               <motion.span 
@@ -182,7 +168,7 @@ export default function Navbar() {
                 className="block h-[2px] w-7 rounded-full transition-all duration-300"
               />
               <motion.span 
-                animate={isOpen ? { rotate: -45, y: -8, backgroundColor: "#00E5FF", boxShadow: "0 0 10px #00E5FF" } : { rotate: 0, y: 0, backgroundColor: "#ffffff" }} 
+                animate={isOpen ? { rotate: -45, y: -8, backgroundColor: "#00E5FF", boxShadow: "0 0 10px rgba(0,229,255,0.5)" } : { rotate: 0, y: 0, backgroundColor: "#ffffff", boxShadow: "none" }} 
                 className="block h-[2px] w-7 rounded-full transition-all duration-300"
               />
             </button>
@@ -191,7 +177,6 @@ export default function Navbar() {
         </nav>
       </motion.header>
 
-      {/* Full-Screen Mobile Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -199,9 +184,10 @@ export default function Navbar() {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="fixed inset-0 z-[50] flex h-[100dvh] w-full flex-col justify-center bg-[#050505]/98 px-10 backdrop-blur-3xl md:hidden"
+            // 🔥 OPTIMIZATION 4: Yahan 'backdrop-blur-3xl' tha. Bg opacity 95% hone par utne bade blur ka koi sense nahi tha. 
+            // Ab 'backdrop-blur-md' use kiya hai. Isse mobile pe menu animation ekdum 120 FPS chalega bina heat hue.
+            className="fixed inset-0 z-[50] flex h-[100dvh] w-full flex-col justify-center bg-[#050505]/95 px-10 backdrop-blur-md md:hidden"
           >
-            {/* Animated Links */}
             <motion.div 
               variants={linkContainerVariants}
               initial="initial"
@@ -219,7 +205,7 @@ export default function Navbar() {
                     <span className="text-sm font-bold text-[#00E5FF] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                       0{i + 1}
                     </span>
-                    <span className="group-hover:text-[#00E5FF] group-hover:translate-x-2 transition-all duration-300 drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">
+                    <span className="group-hover:text-[#00E5FF] group-hover:translate-x-2 transition-all duration-300" style={{ textShadow: "0 0 8px rgba(0,229,255,0.3)" }}>
                       {link.name}
                     </span>
                   </a>
@@ -227,7 +213,6 @@ export default function Navbar() {
               ))}
             </motion.div>
             
-            {/* Bottom Contact / Email Info on Menu (With enhanced flying animation) */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

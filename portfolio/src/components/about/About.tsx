@@ -87,14 +87,13 @@ export default function About() {
             
             <div className="flex flex-col gap-6 text-sm leading-[1.8] text-white/70 md:gap-7 md:text-base md:leading-loose">
               <p>
-                Hi, I'm Pratik Maurya, a 4th-year Computer Science and Engineering student at Kashi Institute of Technology. I specialize in bridging the gap between modern Web Development and Artificial Intelligence. With a strong command over Python, FastAPI, Next.js, and LLM integrations, I build intelligent, scalable, and highly interactive applications. From automating complex workflows to architecting high-performance backends, my goal is to engineer solutions that are not just functional, but futuristic.
+                Hi, I am Pratik Maurya, a final-year Computer Science student at Kashi Institute of Technology. I spend most of my time building tools that combine solid web development with practical AI. My go-to stack includes Python, FastAPI, Next.js, and LLMs. I love taking complex logic and turning it into web apps that actually feel smart and scalable, rather than just basic functional screens.
               </p>
               <p>
-                Beyond writing clean architecture, I am a digital content creator and the mind behind <span className="font-semibold text-white drop-shadow-md">Pratik Verse</span>, a platform dedicated to producing investigative documentaries, decoding historical mysteries, and applying cinematic storytelling techniques.
+                When I am not writing code or debugging APIs, I am usually researching for my YouTube channel, <span className="font-semibold text-white drop-shadow-md">Pratik Verse</span>. I create investigative documentaries exploring historical mysteries and unsolved cases. Producing this kind of cinematic content taught me a lot about storytelling and audience psychology—skills that surprisingly help me design better user experiences in software.
               </p>
               <p>
-                My technical ecosystem revolves around modern software engineering and automation. I work extensively with Python, FastAPI, and Next.js to develop high-performance backends and interactive frontends. Whether it is engineering a voice-integrated AI assistant, building web automation solutions, or integrating complex LLM workflows, I thrive on tackling challenging problems. I believe that great software is built on a foundation of robust APIs, optimized data flow, and secure architecture.
-              </p>
+                Lately, my focus has been on backend architecture and web automation. Whether it scripting a custom Python bot to automate boring browser tasks or building a voice-integrated AI assistant, I enjoy solving messy problems. For me, good engineering is not about using the fanciest buzzwords; it about writing clean, secure code and optimizing data flow to keep things running smoothly behind the scenes.              </p>
             </div>
           </motion.div>
 
